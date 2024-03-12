@@ -1,119 +1,45 @@
-import 'package:country_code_picker/country_code_picker.dart';
-import 'package:fit_for_life/screens/intro/splash_screen.dart';
-import 'package:fit_for_life/screens/route/index.dart';
-import 'package:fit_for_life/services/navigation_service.dart';
-import 'package:fit_for_life/services/shared_preferences.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:closing_deal/Loginpage/loginpage.dart';
+import 'package:closing_deal/constants/colors.dart';
+import 'package:closing_deal/constants/images.dart';
+import 'package:closing_deal/homepage/homepage.dart';
+import 'package:closing_deal/otppage/otppage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:month_year_picker/month_year_picker.dart';
+import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 
-void main() async {
-  await dotenv.load(fileName: "lib/.env");
-  await SharedPreference.initializeSharedPreferences();
-  
+import 'dashboard/dashboard.dart';
+import 'profiledetailspage/profiledetailspage.dart';
+import 'seedetailspage/seedetailspage.dart';
+import 'uploadagentproperty/uploadagentpropert.dart';
+import 'userdetailspage/userdetailspage.dart';
 
-
-  runApp(
-    const ProviderScope(
-      child: App(),
-    ),
-  );
+void main() {
+  runApp(const MyApp());
 }
 
-class App extends ConsumerStatefulWidget {
-  const App({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-  @override
-  ConsumerState<App> createState() => _AppState();
-}
-
-class _AppState extends ConsumerState<App> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      supportedLocales: const [
-        Locale("af"),
-        Locale("am"),
-        Locale("ar"),
-        Locale("az"),
-        Locale("be"),
-        Locale("bg"),
-        Locale("bn"),
-        Locale("bs"),
-        Locale("ca"),
-        Locale("cs"),
-        Locale("da"),
-        Locale("de"),
-        Locale("el"),
-        Locale("en"),
-        Locale("es"),
-        Locale("et"),
-        Locale("fa"),
-        Locale("fi"),
-        Locale("fr"),
-        Locale("gl"),
-        Locale("ha"),
-        Locale("he"),
-        Locale("hi"),
-        Locale("hr"),
-        Locale("hu"),
-        Locale("hy"),
-        Locale("id"),
-        Locale("is"),
-        Locale("it"),
-        Locale("ja"),
-        Locale("ka"),
-        Locale("kk"),
-        Locale("km"),
-        Locale("ko"),
-        Locale("ku"),
-        Locale("ky"),
-        Locale("lt"),
-        Locale("lv"),
-        Locale("mk"),
-        Locale("ml"),
-        Locale("mn"),
-        Locale("ms"),
-        Locale("nb"),
-        Locale("nl"),
-        Locale("nn"),
-        Locale("no"),
-        Locale("pl"),
-        Locale("ps"),
-        Locale("pt"),
-        Locale("ro"),
-        Locale("ru"),
-        Locale("sd"),
-        Locale("sk"),
-        Locale("sl"),
-        Locale("so"),
-        Locale("sq"),
-        Locale("sr"),
-        Locale("sv"),
-        Locale("ta"),
-        Locale("tg"),
-        Locale("th"),
-        Locale("tk"),
-        Locale("tr"),
-        Locale("tt"),
-        Locale("uk"),
-        Locale("ug"),
-        Locale("ur"),
-        Locale("uz"),
-        Locale("vi"),
-        Locale("zh")
-      ],
-      localizationsDelegates: const [
-        CountryLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        MonthYearPickerLocalizations.delegate,
-      ],
-      home: const SplashScreen(),
-      navigatorKey: NavigationService.navigatorKey,
+    return Sizer(
+      builder: (context, Orientation, DeviceType) {
+        return GetMaterialApp(
+            title: 'Flutter Demo',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              useMaterial3: true,
+            ),
+            home: AnimatedSplashScreen(
+                duration: 3000,
+                splash: Images.LOGO,
+                nextScreen: LoginPage(),
+                splashTransition: SplashTransition.fadeTransition,
+                // pageTransitionType: PageTransitionType.scale,
+                backgroundColor: cWhiteColor));
+      },
     );
   }
 }
