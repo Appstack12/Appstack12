@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
             home: AnimatedSplashScreen(
                 duration: 3000,
                 splash: Images.LOGO,
-                nextScreen: VedioRecording(),
+                nextScreen: HomePage(),
                 splashTransition: SplashTransition.fadeTransition,
                 // pageTransitionType: PageTransitionType.scale,
                 backgroundColor: cWhiteColor));
