@@ -1,11 +1,16 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:camera/camera.dart';
 import 'package:closing_deal/constants/colors.dart';
+import 'package:closing_deal/uploadagentproperty/uploadvedio.dart';
 import 'package:closing_deal/userdetailspage/userdetailspage.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:video_player/video_player.dart';
 
 import '../constants/images.dart';
 import '../dropdownmodel/dropdownmodel.dart';
@@ -18,6 +23,9 @@ class UploadAgentPropert extends StatefulWidget {
 }
 
 class _UploadAgentPropertState extends State<UploadAgentPropert> {
+  CameraController? _controller;
+  VideoPlayerController? _videoController;
+  String? _videoPath;
   List<File> _images = [];
   @override
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -67,6 +75,38 @@ class _UploadAgentPropertState extends State<UploadAgentPropert> {
     setState(() {
       _images.removeAt(index);
     });
+  }
+
+
+  Future<void> _startRecording() async {
+    if (!_controller!.value.isInitialized) {
+      return;
+    }
+
+    final Directory appDir = await getTemporaryDirectory();
+    final String videoPath = '${appDir.path}/video.mp4';
+
+    try {
+      await _controller!.startVideoRecording();
+
+      Timer(Duration(seconds: 30), () async {
+        await _controller!.stopVideoRecording();
+        setState(() {
+          _videoPath = videoPath;
+          _videoController = _videoPath != null
+              ? VideoPlayerController.file(File(_videoPath!))
+              : null;
+          if (_videoController != null) {
+            _videoController!.initialize().then((_) {
+              setState(() {});
+              _videoController!.play();
+            });
+          }
+        });
+      });
+    } catch (e) {
+      print("Error starting video recording: $e");
+    }
   }
 
   void _showImageOptions() {
@@ -340,6 +380,13 @@ class _UploadAgentPropertState extends State<UploadAgentPropert> {
                           },
                         ),
                       ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                    //  VideoRecorderScreen(),
+                      SizedBox(
+                        height: 10,
+                      ),
                       _isLoading
                           ? CircularProgressIndicator(
                               color: cPrimaryColor,
@@ -445,6 +492,40 @@ class _UploadAgentPropertState extends State<UploadAgentPropert> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget uploiadvedio() {
+    // if (!_controller!.value.isInitialized) {
+    //   return Container();
+    // }
+    return Column(
+      children: <Widget>[
+        Center(
+          child: AspectRatio(
+            aspectRatio: _controller!.value.aspectRatio,
+            child: CameraPreview(_controller!),
+          ),
+        ),
+        if (_videoPath != null)
+          Container(
+            height: 200,
+            width: double.infinity,
+            child: _videoController != null
+                ? AspectRatio(
+                    aspectRatio: _videoController!.value.aspectRatio,
+                    child: VideoPlayer(_videoController!),
+                  )
+                : Container(),
+          ),
+        Padding(
+          padding: EdgeInsets.all(10.0),
+          child: ElevatedButton(
+            onPressed: _startRecording,
+            child: Text('Record 30 Seconds'),
+          ),
+        ),
+      ],
     );
   }
 
@@ -703,5 +784,12 @@ class _UploadAgentPropertState extends State<UploadAgentPropert> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    _videoController?.dispose();
+    super.dispose();
   }
 }

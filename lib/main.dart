@@ -1,4 +1,5 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:camera/camera.dart';
 import 'package:closing_deal/Loginpage/loginpage.dart';
 import 'package:closing_deal/constants/colors.dart';
 import 'package:closing_deal/constants/images.dart';
@@ -12,9 +13,14 @@ import 'dashboard/dashboard.dart';
 import 'profiledetailspage/profiledetailspage.dart';
 import 'seedetailspage/seedetailspage.dart';
 import 'uploadagentproperty/uploadagentpropert.dart';
+import 'uploadagentproperty/uploadvedio.dart';
 import 'userdetailspage/userdetailspage.dart';
 
-void main() {
+List<CameraDescription>? cameras;
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  cameras = await availableCameras();
   runApp(const MyApp());
 }
 
@@ -35,7 +41,7 @@ class MyApp extends StatelessWidget {
             home: AnimatedSplashScreen(
                 duration: 3000,
                 splash: Images.LOGO,
-                nextScreen: LoginPage(),
+                nextScreen: VedioRecording(),
                 splashTransition: SplashTransition.fadeTransition,
                 // pageTransitionType: PageTransitionType.scale,
                 backgroundColor: cWhiteColor));
