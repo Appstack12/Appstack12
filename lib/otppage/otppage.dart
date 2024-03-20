@@ -1,8 +1,7 @@
 import 'package:closing_deal/Loginpage/loginpage.dart';
 import 'package:closing_deal/constants/colors.dart';
 import 'package:closing_deal/dashboard/dashboard.dart';
-import 'package:closing_deal/homepage/homepage.dart';
-import 'package:closing_deal/userdetailspage/userdetailspage.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,6 +10,7 @@ import 'package:lottie/lottie.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:overlay_toast_message/overlay_toast_message.dart';
 
 class OtpPage extends StatefulWidget {
   final dynamic argument;
@@ -115,21 +115,21 @@ class _OtpPageState extends State<OtpPage> {
                         child: Column(
                           children: [
                             OTPTextField(
-                                controller: otpController,
-                                length: 5,
-                                width: MediaQuery.of(context).size.width,
-                                textFieldAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                fieldWidth: 45,
-                                fieldStyle: FieldStyle.box,
-                                outlineBorderRadius: 15,
-                                style: TextStyle(fontSize: 17),
-                                onChanged: (pin) {
-                                  print("Changed: " + pin);
-                                },
-                                onCompleted: (pin) {
-                                  print("Completed: " + pin);
-                                }),
+                              controller: otpController,
+                              length: 5,
+                              width: MediaQuery.of(context).size.width,
+                              textFieldAlignment: MainAxisAlignment.spaceAround,
+                              fieldWidth: 45,
+                              fieldStyle: FieldStyle.box,
+                              outlineBorderRadius: 15,
+                              style: TextStyle(fontSize: 17),
+                              onChanged: (pin) {
+                                print("Changed: " + pin);
+                              },
+                              onCompleted: (pin) {
+                                print("Completed: " + pin);
+                              },
+                            ),
                           ],
                         ),
                       ),
@@ -148,7 +148,22 @@ class _OtpPageState extends State<OtpPage> {
                                       _isLoading = true;
                                     });
                                     Future.delayed(Duration(seconds: 1), () {
-                                      if (otpController == null) {
+                                      if (otpController.toString().length !=
+                                          5) {
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                        OverlayToastMessage.show(
+                                          context,
+                                          backgroundColor: Colors.red,
+                                          textStyle: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500),
+                                          textMessage: 'Enter Correct otp',
+                                        );
+
+                                        print('Enter correct otp');
                                       } else {
                                         setState(() {
                                           _isLoading = false;

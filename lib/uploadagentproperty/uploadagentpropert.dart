@@ -27,6 +27,7 @@ class _UploadAgentPropertState extends State<UploadAgentPropert> {
   VideoPlayerController? _videoController;
   String? _videoPath;
   List<File> _images = [];
+  List<File> _vedio = [];
   @override
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController city = TextEditingController();
@@ -44,6 +45,29 @@ class _UploadAgentPropertState extends State<UploadAgentPropert> {
         _images.add(File(pickedFile.path));
       });
     }
+  }
+
+  Future<void> vediofile(ImageSource source) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickVideo(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _vedio.add(File(pickedFile.path));
+        // Play the selected video
+        _videoController = VideoPlayerController.file(File(pickedFile.path))
+          ..initialize().then((_) {
+            setState(() {
+              _videoController!.play();
+            });
+          });
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // _controller = VideoPlayerController.asset('');
+    super.initState();
   }
 
   bool _isLoading = false;
@@ -75,38 +99,6 @@ class _UploadAgentPropertState extends State<UploadAgentPropert> {
     setState(() {
       _images.removeAt(index);
     });
-  }
-
-
-  Future<void> _startRecording() async {
-    if (!_controller!.value.isInitialized) {
-      return;
-    }
-
-    final Directory appDir = await getTemporaryDirectory();
-    final String videoPath = '${appDir.path}/video.mp4';
-
-    try {
-      await _controller!.startVideoRecording();
-
-      Timer(Duration(seconds: 30), () async {
-        await _controller!.stopVideoRecording();
-        setState(() {
-          _videoPath = videoPath;
-          _videoController = _videoPath != null
-              ? VideoPlayerController.file(File(_videoPath!))
-              : null;
-          if (_videoController != null) {
-            _videoController!.initialize().then((_) {
-              setState(() {});
-              _videoController!.play();
-            });
-          }
-        });
-      });
-    } catch (e) {
-      print("Error starting video recording: $e");
-    }
   }
 
   void _showImageOptions() {
@@ -356,34 +348,77 @@ class _UploadAgentPropertState extends State<UploadAgentPropert> {
                       SizedBox(
                         height: 10,
                       ),
-                      Container(
-                        height: 150,
-                        child: ListView.builder(
-                          itemCount: _images.length,
-                          scrollDirection: Axis.horizontal,
-                          physics: ScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Container(
-                                      height: 100,
-                                      child: Image.file(_images[index])),
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () => _deleteImage(index),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
+                      if (_images.isNotEmpty)
+                        Container(
+                          height: 150,
+                          child: ListView.builder(
+                            itemCount: _images.length,
+                            scrollDirection: Axis.horizontal,
+                            physics: ScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Container(
+                                        height: 100,
+                                        child: Image.file(_images[index])),
+                                    IconButton(
+                                      icon: Icon(Icons.delete),
+                                      onPressed: () => _deleteImage(index),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
                       SizedBox(
                         height: 10,
                       ),
-                    //  VideoRecorderScreen(),
+                       Text(
+                        'Upload vedios',
+                        style: TextStyle(
+                            color: cBlackColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700),
+                      ),
+                      SizedBox(
+                        height: 7,
+                      )
+,                      GestureDetector(
+                        onTap: () {
+                          vediofile(ImageSource.camera);
+                        },
+                        child: DottedBorder(
+                          color: cBlackColor,
+                          strokeWidth: 2,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            decoration: BoxDecoration(
+                                color: cWhiteColor,
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Icon(
+                              Icons.upload,
+                              color: cBlackColor,
+                              size: 30,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 7,
+                      ),
+                      if (_vedio.isNotEmpty)
+                        _videoController != null &&
+                                _videoController!.value.isInitialized
+                            ? AspectRatio(
+                                aspectRatio:
+                                    _videoController!.value.aspectRatio,
+                                child: VideoPlayer(_videoController!),
+                              )
+                            : Container(),
                       SizedBox(
                         height: 10,
                       ),
@@ -492,40 +527,6 @@ class _UploadAgentPropertState extends State<UploadAgentPropert> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget uploiadvedio() {
-    // if (!_controller!.value.isInitialized) {
-    //   return Container();
-    // }
-    return Column(
-      children: <Widget>[
-        Center(
-          child: AspectRatio(
-            aspectRatio: _controller!.value.aspectRatio,
-            child: CameraPreview(_controller!),
-          ),
-        ),
-        if (_videoPath != null)
-          Container(
-            height: 200,
-            width: double.infinity,
-            child: _videoController != null
-                ? AspectRatio(
-                    aspectRatio: _videoController!.value.aspectRatio,
-                    child: VideoPlayer(_videoController!),
-                  )
-                : Container(),
-          ),
-        Padding(
-          padding: EdgeInsets.all(10.0),
-          child: ElevatedButton(
-            onPressed: _startRecording,
-            child: Text('Record 30 Seconds'),
-          ),
-        ),
-      ],
     );
   }
 
