@@ -25,7 +25,7 @@ class _OtpPageState extends State<OtpPage> {
   final FocusNode _otpFocusNode = FocusNode();
 
   Timer? _timer;
-  int _seconds = 10;
+  int _totalSeconds = 120;
   bool _timerCompleted = false;
 
   @override
@@ -39,27 +39,26 @@ class _OtpPageState extends State<OtpPage> {
     _timer?.cancel();
     super.dispose();
   }
-
-  void _startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_seconds > 0) {
-          _seconds--;
-        } else {
-          _timer?.cancel();
-          _timerCompleted = true;
-        }
-      });
-    });
-  }
-
-  void _resetTimer() {
+void _startTimer() {
+  _timer = Timer.periodic(Duration(seconds: 1), (timer) {
     setState(() {
-      _seconds = 10; // Reset the timer duration
-      _timerCompleted = false;
+      if (_totalSeconds > 0) {
+        _totalSeconds--;
+      } else {
+        _timer?.cancel();
+        _timerCompleted = true;
+      }
     });
-    _startTimer(); // Start the timer again
-  }
+  });
+}
+
+ void _resetTimer() {
+  setState(() {
+    _totalSeconds = 120; // Reset the total seconds
+    _timerCompleted = false;
+  });
+  _startTimer(); // Start the timer again
+}
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   OtpFieldController otpController = OtpFieldController();
@@ -285,7 +284,7 @@ class _OtpPageState extends State<OtpPage> {
                           child: Text(
                             _timerCompleted
                                 ? 'Resend otp'
-                                : '$_seconds seconds',
+                                : '${(_totalSeconds ~/ 60).toString().padLeft(2, '0')}:${(_totalSeconds % 60).toString().padLeft(2, '0')}',
                             style: TextStyle(
                               color: cWhiteColor,
                               fontWeight: FontWeight.w800,
