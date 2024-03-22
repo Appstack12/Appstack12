@@ -55,6 +55,9 @@ dependencies:
   path: ^1.9.0
   simple_toast_message: ^0.0.6
   overlay_toast_message: ^1.0.2
+  animated_custom_dropdown: ^3.0.0
+ 
+ 
 
 
   

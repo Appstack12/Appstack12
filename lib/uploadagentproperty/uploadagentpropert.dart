@@ -16,7 +16,8 @@ import '../constants/images.dart';
 import '../dropdownmodel/dropdownmodel.dart';
 
 class UploadAgentPropert extends StatefulWidget {
-  const UploadAgentPropert({super.key});
+  final String title;
+  const UploadAgentPropert({super.key, required this.title});
 
   @override
   State<UploadAgentPropert> createState() => _UploadAgentPropertState();
@@ -68,6 +69,7 @@ class _UploadAgentPropertState extends State<UploadAgentPropert> {
   void initState() {
     // _controller = VideoPlayerController.asset('');
     super.initState();
+    print(widget.title.toString());
   }
 
   bool _isLoading = false;
@@ -164,7 +166,7 @@ class _UploadAgentPropertState extends State<UploadAgentPropert> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Agent Upload Form',
+                              'Agent Upload Form' ,
                               style: TextStyle(
                                   color: cBlackColor,
                                   fontSize: 24,
@@ -174,7 +176,7 @@ class _UploadAgentPropertState extends State<UploadAgentPropert> {
                               height: 5,
                             ),
                             Text(
-                              'Upload Property',
+                              'Upload Property'+ widget.title.toString(),
                               style: TextStyle(
                                   color: cPrimaryColor,
                                   fontSize: 16,
@@ -376,7 +378,7 @@ class _UploadAgentPropertState extends State<UploadAgentPropert> {
                       SizedBox(
                         height: 10,
                       ),
-                       Text(
+                      Text(
                         'Upload vedios',
                         style: TextStyle(
                             color: cBlackColor,
@@ -385,8 +387,8 @@ class _UploadAgentPropertState extends State<UploadAgentPropert> {
                       ),
                       SizedBox(
                         height: 7,
-                      )
-,                      GestureDetector(
+                      ),
+                      GestureDetector(
                         onTap: () {
                           vediofile(ImageSource.camera);
                         },

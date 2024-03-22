@@ -26,6 +26,7 @@ class _DashBoardState extends State<DashBoard> {
   bool visibility = true;
   bool isrent = true;
   bool rentvisibility = true;
+  final List<String> titles = ['Buy', 'Rent', 'Sell'];
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
@@ -337,6 +338,7 @@ class _DashBoardState extends State<DashBoard> {
                               topRight: Radius.circular(30)),
                         ),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(
                               height: 10,
@@ -365,32 +367,30 @@ class _DashBoardState extends State<DashBoard> {
                             SizedBox(
                               height: 20,
                             ),
-                            ListTile(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          UploadAgentPropert()),
-                                );
-                              },
-                              title: Text(
-                                'Rent',
-                                style: TextStyle(
-                                    color: cBlackColor,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                            ),
-                            ListTile(
-                              title: Text(
-                                'Sell',
-                                style: TextStyle(
-                                    color: cBlackColor,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                            ),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: titles.length,
+                              scrollDirection: Axis.vertical,
+                              physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (BuildContext context, int index) {
+                              return ListTile(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            UploadAgentPropert(title: titles[index])),
+                                  );
+                                },
+                                title: Text(
+                                  titles[index].toString(),
+                                  style: TextStyle(
+                                      color: cBlackColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              );
+                            }),
                             SizedBox(
                               height: 10,
                             )

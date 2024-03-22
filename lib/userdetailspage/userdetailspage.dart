@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sizer/sizer.dart';
 
+import '../dashboard/dashboard.dart';
 import '../homepage/homepage.dart';
 
 class UploadSucessfulyPage extends StatefulWidget {
@@ -68,7 +69,7 @@ class _UploadSucessfulyPageState extends State<UploadSucessfulyPage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          UploadSucessfulyPage()),
+                                          DashBoard()),
                                 );
                               });
                             }
