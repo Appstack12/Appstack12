@@ -6,6 +6,7 @@ import 'package:closing_deal/uploadagentproperty/uploadagentpropert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:slider_button/slider_button.dart';
 import 'package:sweep_animation_button/sweep_animation_button.dart';
@@ -357,40 +358,44 @@ class _DashBoardState extends State<DashBoard> {
                             SizedBox(
                               height: 20,
                             ),
-                            Text(
-                              'Agent Upload For :',
-                              style: TextStyle(
-                                  color: cBlackColor,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w700),
+                            Padding(
+                              padding: EdgeInsets.only(left: 30),
+                              child: Text(
+                                'Agent Upload For :',
+                                style: TextStyle(
+                                    color: cBlackColor,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w700),
+                              ),
                             ),
                             SizedBox(
                               height: 20,
                             ),
                             ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: titles.length,
-                              scrollDirection: Axis.vertical,
-                              physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: titles.length,
+                                scrollDirection: Axis.vertical,
+                                physics: NeverScrollableScrollPhysics(),
                                 itemBuilder: (BuildContext context, int index) {
-                              return ListTile(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            UploadAgentPropert(title: titles[index])),
+                                  return ListTile(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                UploadAgentPropert(
+                                                    title: titles[index])),
+                                      );
+                                    },
+                                    title: Text(
+                                      titles[index].toString(),
+                                      style: TextStyle(
+                                          color: cBlackColor,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w700),
+                                    ),
                                   );
-                                },
-                                title: Text(
-                                  titles[index].toString(),
-                                  style: TextStyle(
-                                      color: cBlackColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                              );
-                            }),
+                                }),
                             SizedBox(
                               height: 10,
                             )
@@ -435,5 +440,10 @@ class _DashBoardState extends State<DashBoard> {
         ]),
       ),
     );
+  }
+
+  Future<String> _getImagePathFromPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('imagePath') ?? '';
   }
 }

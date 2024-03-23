@@ -58,21 +58,19 @@ class _UploadSucessfulyPageState extends State<UploadSucessfulyPage> {
                       child: Center(
                         child: GestureDetector(
                           onTap: () {
-                            if (_formKey.currentState!.validate()) {
-                              setState(() {
+                            setState(() {
                                 _isLoading = true;
                               });
+                              print('>>>>>>>>>>>>>>>>>>>');
                               Future.delayed(Duration(seconds: 1), () {
                                 // Form is valid, proceed with submission
 
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          DashBoard()),
+                                      builder: (context) => DashBoard()),
                                 );
                               });
-                            }
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(

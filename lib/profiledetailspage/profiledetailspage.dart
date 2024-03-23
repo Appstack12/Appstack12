@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 import '../constants/images.dart';
@@ -19,7 +20,20 @@ class ProfileDetailsPage extends StatefulWidget {
 
 class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
   @override
+  SharedPreferences? _prefs;
   File? _image;
+  String? img;
+
+  Future<void> _saveImagePath(String imagePath) async {
+    await _prefs?.setString('imagePath', imagePath);
+    setState(() {
+      img = imagePath;
+    });
+  }
+  void _initPrefs() async {
+    _prefs = await SharedPreferences.getInstance();
+    img = _prefs?.getString('imagePath') ?? '';
+  }
 
   Future getImage(ImageSource source) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
@@ -31,6 +45,11 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
         print('No image selected.');
       }
     });
+  }
+    @override
+  void initState() {
+    super.initState();
+    _initPrefs();
   }
 
   Widget build(BuildContext context) {
